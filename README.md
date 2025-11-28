@@ -1,231 +1,184 @@
 # GuardX – Smart Anti-Theft System
 
-A compact, low-cost, IoT-enabled anti-theft device designed to protect small personal belongings using motion sensing and RFID/GSR-based owner authentication. GuardX prevents theft in real time by detecting unauthorized touch or movement.
+A compact, low-cost, IoT-enabled anti-theft device designed to protect small personal belongings using motion sensing and RFID/GSR-based owner authentication. GuardX detects unauthorized touch or movement in real time and raises local and optional remote alerts.
 
 ---
 
 ## Project Overview
 
-GuardX is a lightweight embedded security device built using ESP32/ESP8266, motion sensors, and RFID/GSR touch sensing.  
-The system identifies unauthorized handling by comparing real-time sensor inputs with pre-calibrated owner signatures.
+GuardX is a lightweight embedded security device built with ESP32 / ESP8266, motion sensors, and RFID/GSR touch sensing. The system compares live sensor inputs with pre-calibrated owner signatures to determine authorized vs. unauthorized interactions.
 
-It provides:
-
-- Real-time detection of lifting, tilting, or movement  
-- Owner authentication using RFID/GSR touch sensing  
-- Immediate alarms and optional IoT notifications  
-- Low-power operation suitable for small portable items  
+Key capabilities:
+- Real-time detection of lifting, tilting, or displacement
+- Owner verification using RFID + GSR touch sensing
+- Immediate buzzer alerts and optional IoT notifications (Blynk, MQTT, Firebase)
+- Low-power operation for portable items
 
 ---
 
 ## Features
 
-- Smart motion detection (lift, tilt, displacement)  
-- RFID/GSR-based biometric-style owner verification  
-- Instant buzzer alerts for unauthorized access  
-- Optional IoT push notifications (Blynk/MQTT/Firebase)  
-- Compact and battery-powered hardware design  
-- No machine learning or image processing required  
-- Ideal for hostels, dorms, offices, and travel use  
+- Smart motion detection (lift, tilt, displacement)
+- RFID/GSR-based biometric-style owner verification
+- Instant buzzer alerts for unauthorized access
+- Optional push notifications via Blynk, MQTT, or Firebase
+- Compact, battery-powered hardware design
+- No computer vision or ML required
+- Ideal for hostels, dorms, offices, and travel
 
 ---
 
 ## Hardware Requirements
 
-- ESP32 / ESP8266 microcontroller  
-- MPU6050 or Tilt/Accelerometer sensor  
-- RFID RC522 or GSR touch sensor  
-- Buzzer for alarm  
-- LEDs for system indication  
-- Li-ion/9V battery  
-- Jumper wires, breadboard or PCB  
+- ESP32 or ESP8266 microcontroller
+- MPU6050 (or similar) accelerometer/gyro sensor
+- RFID RC522 reader and tags OR a GSR touch sensor
+- Buzzer and LEDs for local alerts/status
+- Li-ion battery (or 9V) and power management components
+- Jumper wires, breadboard or custom PCB
 
 ---
 
 ## System Architecture
 
-  Owner Touch
-        │
- ┌──────▼────────┐
- │ RFID/GSR Auth │
- └──────┬────────┘
-        │ Verified / Not Verified
-        ▼
-┌──────────────────┐
-│ Motion Detection │
-└──────┬───────────┘
-│
-▼
-┌──────────────────┐
-│ Decision Module │
-│ (Safe / Alert) │
-└──────┬───────────┘
-│
-Unauthorized?
-│ │
-No Yes
-│ │
-Safe Mode Trigger Alarm
-│
-┌────────▼─────────┐
-│ Buzzer + IoT Msg │
-└──────────────────┘
+For a clean visual, place the architecture diagram in docs/architecture.png and the wiring in schematics/circuit.png.
+
+- System architecture image: docs/architecture.png
+- Wiring / circuit diagram: schematics/circuit.png
+
+If the images are present, they will render in GitHub automatically. Example inline usage:
+![System Architecture](docs/architecture.png)
 
 ---
 
 ## Project Structure
 
 GuardX/
-│
-├── firmware/ # Core device firmware (ESP32/ESP8266)
-│   ├── guardx_main.ino # Main program logic
-│   ├── gsr_rfid_module.h # GSR/RFID owner authentication module
-│   ├── motion_detection.h # Accelerometer/Motion detection logic
-│   ├── alerts.h # Buzzer + IoT alert functions
-│
-├── schematics/ # Hardware reference files
-│   ├── circuit.png # Circuit wiring diagram
-│   ├── block_diagram.png # System block diagram
-│
-├── docs/ # Documentation and explanation assets
-│   ├── architecture.png # System architecture flow
-│   ├── flowchart.png # Working process flowchart
-│   ├── usecase.png # Use-case diagram
-│
-├── data/ # Sensor readings (authorized/unauthorized)
-│   ├── readings.csv # Raw calibration data (if required)
-│
-├── utils/ # Optional helper scripts/tools
-│   ├── calibration_tool.py # Touch/motion calibration script
-│   ├── analyzer.py # Motion + GSR data analysis
-│
-├── mobile/ # IoT notification integration
-│   ├── blynk_setup.md # Setup for Blynk notifications
-│   ├── mqtt_config.md # MQTT configuration guide
-│
-├── .env.example # Template for IoT API keys (not committed)
-├── .gitignore # Ignore firmware builds & secrets
-│
-├── package.json # If using a web dashboard/IoT UI
-└── README.md # This documentation
+- firmware/ — Core device firmware (ESP32/ESP8266)
+  - guardx_main.ino — Main program logic
+  - gsr_rfid_module.h — GSR/RFID owner authentication module
+  - motion_detection.h — Accelerometer / motion detection logic
+  - alerts.h — Buzzer + IoT alert functions
+- schematics/ — Hardware reference files
+  - circuit.png — Circuit wiring diagram
+  - block_diagram.png — System block diagram
+- docs/ — Documentation assets
+  - architecture.png — System architecture flow
+  - flowchart.png — Runtime flowchart
+  - usecase.png — Use-case diagram
+- data/ — Sensor readings (authorized/unauthorized)
+  - readings.csv — Raw calibration / test data
+- utils/ — Helper scripts and tools
+  - calibration_tool.py — Touch/motion calibration script
+  - analyzer.py — Motion + GSR data analysis
+- mobile/ — IoT notification integration docs
+  - blynk_setup.md — Blynk setup guide
+  - mqtt_config.md — MQTT configuration guide
+- .env.example — Template for IoT API keys (do not commit secrets)
+- .gitignore — Ignore firmware builds & secrets
+- package.json — (optional) web dashboard / IoT UI
+- README.md — This documentation
 
 ---
 
 ## Installation & Setup
 
-### 1. Clone Repository
-```bash
-git clone https://github.com/your-username/GuardX.git
-cd GuardX
-```
+1. Clone the repository:
+   ```
+   git clone https://github.com/your-username/GuardX.git
+   cd GuardX
+   ```
 
-### 2. Install Arduino Libraries
-- MFRC522 (if using RFID)  
-- MPU6050 / Adafruit Sensor  
-- Blynk / MQTT / Firebase (optional)  
-- WiFi.h  
-- Wire.h  
+2. Install required Arduino libraries (via Library Manager or PlatformIO):
+   - MFRC522 (if using RC522 RFID)
+   - MPU6050 / Adafruit Sensor or equivalent
+   - Blynk (optional) / PubSubClient (MQTT) / Firebase libs (optional)
+   - WiFi.h, Wire.h, and other core Arduino libs
 
-### 3. Flash Code  
-Upload `firmx_main.ino` (note: ensure file name is `guardx_main.ino`) to ESP32/ESP8266 using Arduino IDE or PlatformIO.
+3. Configure environment (create a local `.env` from `.env.example` if using IoT integrations):
+   - MQTT broker URL, username, password
+   - Blynk auth token
+   - Any push notification keys (Firebase, etc.)
+
+4. Flash firmware:
+   - Open `firmware/guardx_main.ino` in Arduino IDE (or import with PlatformIO)
+   - Select the correct board (ESP32/ESP8266) and port
+   - Compile and upload
 
 ---
 
-## How the System Works
+## How the System Works (High level)
 
-### 1. System Armed
-- Owner leaves the item  
-- Baseline motion values recorded  
-- GSR/RFID owner touch value stored  
+1. System Arming
+   - Owner leaves the item; system records baseline motion values and owner touch signature (GSR/RFID).
 
-### 2. Touch Detected
-- If touch matches owner → safe  
-- If mismatch → unauthorized touch alert  
+2. Touch Detection
+   - When touch is detected:
+     - If touch matches owner signature → system remains in Safe mode.
+     - If touch does not match → system enters Warning/Alert state.
 
-### 3. Movement Detected
-- Lift, tilt, motion triggers event  
-- If owner is absent → alarm + optional notification  
+3. Movement Detection
+   - Motion events (lift, tilt, displacement) are compared against threshold values.
+   - If motion occurs and no owner is verified → Alarm triggered.
 
-### 4. Alert Mechanism
-- Buzzer beeps continuously  
-- IoT platform notifies owner instantly  
+4. Alerting
+   - Local: buzzer and LEDs
+   - Remote (optional): MQTT / Blynk / Firebase push notification
 
 ---
 
 ## Testing & Validation
 
 | Test Case                        | Expected Output |
-| -------------------------------- | --------------- |
+|----------------------------------|-----------------|
 | Owner touches item               | No alert        |
 | Owner lifts item                 | No alert        |
 | Unauthorized person touches item | Warning alert   |
 | Unauthorized lifts item          | Full alarm      |
 | Light vibrations                 | Ignored         |
-| High tilt > threshold            | Alarm           |
+| Tilt above threshold             | Alarm           |
+
+Tips:
+- Use `utils/calibration_tool.py` to tune motion and GSR thresholds.
+- Capture traces to `data/readings.csv` for repeatable tests.
 
 ---
 
-## Scope of the Project
+## Scope & Limitations
 
-### Scope
-- Develop a compact, low-cost theft-prevention device  
-- Implement real-time motion + GSR/RFID-based detection  
-- Improve ownership verification accuracy  
-- Provide instant alerts using IoT platforms  
+Scope:
+- Real-time motion + RFID/GSR owner verification
+- Low-cost, battery-powered prototype
+- Immediate alerts via buzzer and optional IoT notification
 
-### Target Audience
-- Hostel students  
-- Office users  
-- Travellers  
-- Users carrying wallets, keys, bags, jewellery, gadgets  
-
-### Deliverables
-- Fully working hardware prototype  
-- Mobile/IoT dashboard for alerts  
-- Documentation (design, setup, analysis)  
-
-### Inclusions
-- Motion + GSR/RFID sensor integration  
-- Embedded C firmware  
-- IoT alert workflow  
-- Indoor theft-prevention testing  
-
-### Exclusions
-- No GPS outdoor tracking  
-- No high-end biometrics  
-- No video/image-based AI  
-- Not for industrial assets  
-
-### Data
-- Real-time sensor readings labelled as “authorized/unauthorized”  
-- Baseline calibration of owner GSR/RFID values  
-- Noise filtering + normalization  
-
-### Limitations
-- GSR may vary with sweat/humidity  
-- Single authorized user in this version  
-- Indoor-only system  
-- Sensitivity changes with item type  
+Limitations:
+- GSR readings can vary with humidity/sweat
+- Single authorized user by default
+- Intended for indoor/personal items (no GPS/location)
+- Not suitable for industrial asset tracking
 
 ---
 
 ## Future Enhancements
 
-- GPS add-on for outdoor tracking  
-- Multiple authorized users  
-- Ultra-low power mode  
-- Full Android/iOS app  
-- Smart lock integration  
+- GPS add-on for outdoor tracking
+- Multiple authorized users
+- Ultra-low-power deep-sleep modes
+- Full Android/iOS companion app
+- Smart lock / actuator integration
 
 ---
 
 ## License
 
-MIT License.
+This project is released under the MIT License. Add a LICENSE file at the repository root.
 
 ---
 
 ## Contributors
 
-1. ARSHITHA MS  
-2. SHAIK SAMREEN
+- ARSHITHA MS  
+- SHAIK SAMREEN
+
+---
+
