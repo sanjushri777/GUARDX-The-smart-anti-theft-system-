@@ -73,22 +73,37 @@ Safe Mode Trigger Alarm
 ## Project Structure
 GuardX/
 │
-├── firmware/
-│ ├── guardx_main.ino
-│ ├── gsr_rfid_module.h
-│ ├── motion_detection.h
-│ ├── alerts.h
+├── firmware/ # Core device firmware (ESP32/ESP8266)
+│ ├── guardx_main.ino # Main program logic
+│ ├── gsr_rfid_module.h # GSR/RFID owner authentication module
+│ ├── motion_detection.h # Accelerometer/Motion detection logic
+│ ├── alerts.h # Buzzer + IoT alert functions
 │
-├── schematics/
-│ ├── circuit.png
-│ ├── block_diagram.png
+├── schematics/ # Hardware reference files
+│ ├── circuit.png # Circuit wiring diagram
+│ ├── block_diagram.png # System block diagram
 │
-├── docs/
-│ ├── architecture.png
-│ ├── flowchart.png
-│ ├── usecase.png
+├── docs/ # Documentation and explanation assets
+│ ├── architecture.png # System architecture flow
+│ ├── flowchart.png # Working process flowchart
+│ ├── usecase.png # Use-case diagram
 │
-└── README.md
+├── data/ # Sensor readings (authorized/unauthorized)
+│ ├── readings.csv # Raw calibration data (if required)
+│
+├── utils/ # Optional helper scripts/tools
+│ ├── calibration_tool.py # Touch/motion calibration script
+│ ├── analyzer.py # Motion + GSR data analysis
+│
+├── mobile/ # IoT notification integration
+│ ├── blynk_setup.md # Setup for Blynk notifications
+│ ├── mqtt_config.md # MQTT configuration guide
+│
+├── .env.example # Template for IoT API keys (not committed)
+├── .gitignore # Ignore firmware builds & secrets
+│
+├── package.json # If using a web dashboard/IoT UI
+└── README.md # This documentation
 ## Installation & Setup
 
 ### 1. Clone Repository
